@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Eventify</title>
+        <h:outputStylesheet>
+            body {
+                font-family: 'Roboto', Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+                color: #333;
+            }
+            .header {
+                background-color: #5d6d7e;
+                color: white;
+                padding: 1em;
+                text-align: center;
+            }
+            .content {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 2em;
+            }
+            .auth-buttons {
+                text-align: right;
+                margin-bottom: 1em;
+            }
+            .event-card {
+                background-color: white;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                transition: transform 0.3s ease;
+                margin: 0.5em;
+            }
+            .event-card:hover {
+                transform: translateY(-5px);
+            }
+            .event-image {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+            }
+            .event-details {
+                padding: 1em;
+            }
+            .ui-dialog {
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .ui-carousel {
+                margin-top: 2em;
+            }
+            .ui-carousel .ui-carousel-item {
+                text-align: center;
+            }
+        </h:outputStylesheet>
+    </h:head>
+    <h:body>
+        <div class="header">
+            <h1>Eventify</h1>
+        </div>
+        <div class="content">
+            <h:form id="mainForm">
+                <div class="auth-buttons">
+                    <p:commandButton value="Login" onclick="PF('loginDialog').show();" type="button" icon="pi pi-sign-in" styleClass="ui-button-success"/>
+                    <p:commandButton value="Sign up" onclick="PF('registerDialog').show();#{clienteBean.openNew()};" update=":registerForm" type="button" icon="pi pi-user-plus" style="margin-left: 10px;"/>
+                </div>
+            </h:form>
+
+            <p:dialog header="Iniciar Sesión" widgetVar="loginDialog" modal="true" resizable="false" responsive="true">
+                <h:form id="loginForm">
+                    <p:messages id="loginMessages" showDetail="true" closable="true"/>
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <p:outputLabel for="username" value="Email:"/>
+                        <p:inputText id="username" value="#{loginBean.email}" required="true"/>
+
+                        <p:outputLabel for="password" value="Contraseña:"/>
+                        <p:password id="password" value="#{loginBean.password}" required="true"/>
+
+                        <f:facet name="footer">
+                            <p:commandButton value="Iniciar Sesión" action="#{loginBean.login}" update="loginForm:loginMessages" 
+                                             icon="pi pi-sign-in"/>
+                        </f:facet>
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog header="Registrarse" widgetVar="registerDialog" modal="true" resizable="false" responsive="true">
+                <h:form id="registerForm">
+                    <p:messages id="registerMessages" showDetail="true" closable="true"/>
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <p:outputLabel for="reg_nombres" value="Nombres:"/>
+                        <p:inputText id="reg_nombres" value="#{clienteBean.selectedCliente.nombres}" required="true"/>
+
+                        <p:outputLabel for="reg_apellidos" value="Apellidos:"/>
+                        <p:inputText id="reg_apellidos" value="#{clienteBean.selectedCliente.apellidos}" required="true"/>
+
+                        <p:outputLabel for="reg_telefono" value="Teléfono:"/>
+                        <p:inputText id="reg_telefono" value="#{clienteBean.selectedCliente.telefono}" required="true"/>
+
+                        <p:outputLabel for="reg_dui" value="DUI:"/>
+                        <p:inputText id="reg_dui" value="#{clienteBean.selectedCliente.dui}" required="true"/>
+
+                        <p:outputLabel for="reg_nacimiento" value="Fecha de Nacimiento:"/>
+                        <p:calendar id="reg_nacimiento" value="#{clienteBean.selectedCliente.fechaNacimiento}" required="true" pattern="dd/MM/yyyy" mask="true"/>
+
+                        <p:outputLabel for="reg_genero" value="Género:"/>
+                        <p:selectOneMenu id="reg_genero" value="#{clienteBean.selectedCliente.idGenero}" required="true" converter="generoConverter">
+                            <f:selectItems value="#{clienteBean.generos}" var="genero" 
+                                           itemValue="#{genero}" itemLabel="#{genero.nombre}" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel for="reg_email" value="Email:"/>
+                        <p:inputText id="reg_email" value="#{clienteBean.selectedCliente.idUsuario.email}" required="true"/>
+
+                        <p:outputLabel for="reg_password" value="Contraseña:"/>
+                        <p:password id="reg_password" value="#{clienteBean.selectedCliente.idUsuario.password}" required="true" feedback="true" promptLabel="Ingrese una contraseña" weakLabel="Débil" goodLabel="Buena" strongLabel="Fuerte"/>
+
+                        <f:facet name="footer">
+                            <p:commandButton value="Registrarse" action="#{clienteBean.save()}" update="registerForm:registerMessages" 
+                                             oncomplete="resetRegisterForm();"
+                                             icon="pi pi-user-plus"/>
+                        </f:facet>
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+        </div>
+        
+        <script type="text/javascript">
+            const resetRegisterForm = () => {
+                document.getElementById('registerForm').reset();
+            };
+        </script>
+    </h:body>
+</html>
+

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Usuarios</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <p:growl id="messages" showDetail="true" />
+
+            <p:card>
+                <f:facet name="title">
+                    Gestión de Usuarios
+                </f:facet>
+
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton value="Nuevo Admin" icon="pi pi-plus" actionListener="#{usuarioBean.openNew}"
+                                         update=":form:manage-usuario-content" oncomplete="PF('manageUsuarioDialog').show()"
+                                         styleClass="ui-button-success" style="margin-right: .5rem">
+                            <p:resetInput target=":form:manage-usuario-content" />
+                        </p:commandButton>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <p:dataTable id="dt-usuarios" widgetVar="dtUsuarios" var="usuario" value="#{usuarioBean.usuarios}"
+                             reflow="true" styleClass="usuarios-table" rowKey="#{usuario.id}"
+                             paginator="true" rows="10" paginatorPosition="bottom">
+                    <p:column headerText="ID" sortBy="#{usuario.id}">
+                        <h:outputText value="#{usuario.id}" />
+                    </p:column>
+                    <p:column headerText="Email" sortBy="#{usuario.email}">
+                        <h:outputText value="#{usuario.email}" />
+                    </p:column>
+                    <p:column headerText="Rol" sortBy="#{usuario.idRol.nombre}">
+                        <h:outputText value="#{usuario.idRol.nombre}" />
+                    </p:column>
+                    <p:column headerText="Estado" sortBy="#{usuario.estado}">
+                        <p:toggleSwitch value="#{usuario.estado}">
+                            <p:ajax listener="#{usuarioBean.changeEstado(usuario.id)}" update="@form" 
+                                    oncomplete="PF('statusDialog').hide()"/>
+                        </p:toggleSwitch>
+                        <h:outputText value="#{usuario.estado ? 'Activo' : 'Inactivo'}" style="margin-left: 0.5rem;"/>
+                    </p:column>
+                    <p:column exportable="false">
+                        <p:commandButton icon="pi pi-pencil" update=":form:manage-usuario-content"
+                                         oncomplete="PF('manageUsuarioDialog').show()"
+                                         styleClass="edit-button rounded-button ui-button-success" process="@this">
+                            <f:setPropertyActionListener value="#{usuario}" target="#{usuarioBean.selectedUsuario}" />
+                            <p:resetInput target=":form:manage-usuario-content" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:card>
+
+            <p:dialog header="Detalles de Usuario" showEffect="fade" modal="true" widgetVar="manageUsuarioDialog"
+                      responsive="true">
+                <p:outputPanel id="manage-usuario-content" class="ui-fluid">
+                    <p:outputPanel rendered="#{not empty usuarioBean.selectedUsuario}">
+                        <div class="p-field">
+                            <p:outputLabel for="email">Email</p:outputLabel>
+                            <p:inputText id="email" value="#{usuarioBean.selectedUsuario.email}" required="true" />
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel for="password">Contraseña</p:outputLabel>
+                            <p:password id="password" value="#{usuarioBean.selectedUsuario.password}" required="true" />
+                        </div>
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <p:commandButton value="Guardar" icon="pi pi-check" actionListener="#{usuarioBean.save()}"
+                                     update="manage-usuario-content" process="manage-usuario-content @this" />
+                    <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('manageUsuarioDialog').hide()"
+                                     class="ui-button-secondary" />
+                </f:facet>
+            </p:dialog>
+        </h:form>
+
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+            <p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
+        </p:dialog>
+
+    </h:body>
+</html>

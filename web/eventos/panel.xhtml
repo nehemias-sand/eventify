@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title></title>
+        <h:outputStylesheet>
+            :root {
+            --primary-color: #d5d8dc;
+            --secondary-color: #2c3e50;
+            --text-color: #333;
+            --sidebar-width: 250px;
+            }
+            body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            }
+            .layout-wrapper {
+            display: flex;
+            min-height: 100vh;
+            }
+            .menu-sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-color);
+            padding: 1rem;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            height: 100vh;
+            position: fixed;
+            overflow-y: auto;
+            }
+            .content-area {
+            flex-grow: 1;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            margin-left: var(--sidebar-width);
+            }
+            .sidebar-header {
+            text-align: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1rem;
+            }
+            .sidebar-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 300;
+            }
+            .menu-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            }
+            .menu-item:hover {
+            background-color: rgba(255,255,255,0.1);
+            }
+            .menu-item.active {
+            background-color: var(--primary-color);
+            }
+            .menu-item i {
+            margin-right: 10px;
+            }
+            .ui-menu {
+            background: transparent !important;
+            border: none !important;
+            }
+            .ui-menuitem {
+            margin-bottom: 0.5rem;
+            }
+            .ui-menuitem-link {
+            color: white !important;
+            }
+            @media (max-width: 768px) {
+            .menu-sidebar {
+            width: 60px;
+            }
+            .content-area {
+            margin-left: 60px;
+            }
+            .menu-sidebar:hover {
+            width: var(--sidebar-width);
+            }
+            .sidebar-header h2, .menu-item span {
+            display: none;
+            }
+            .menu-sidebar:hover .sidebar-header h2,
+            .menu-sidebar:hover .menu-item span {
+            display: inline;
+            }
+            }
+        </h:outputStylesheet>
+    </h:head>
+    <h:body>
+        <div class="layout-wrapper">
+            <h:form>
+                <div class="menu-sidebar">
+                    <div class="sidebar-header">
+                        <h2>
+                            <i class="pi pi-user" style="font-size: 1.5rem"></i>
+                            <strong>#{adminBean.getSaludo()}</strong>
+                        </h2>
+                    </div>
+                    <p:menu styleClass="transparent-menu">
+                        <p:menuitem value="Eventos" action="#{sidebarClienteBean.setCurrentPage('eventos')}" update="@form :contentArea" styleClass="menu-item #{sidebarClienteBean.currentPage == 'eventos' ? 'active' : ''}">
+                            <i class="pi pi-home"></i>
+                            <span>Eventos</span>
+                        </p:menuitem>
+                        <p:menuitem value="Logout" action="#{sidebarClienteBean.logout()}" ajax="false" styleClass="menu-item">
+                            <i class="pi pi-sign-out"></i>
+                            <span>Logout</span>
+                        </p:menuitem>
+                    </p:menu>
+                </div>
+            </h:form>
+
+            <div class="content-area">
+                <h:panelGroup id="contentArea">
+                    <ui:include src="#{sidebarClienteBean.currentPage}.xhtml" />
+                </h:panelGroup>
+            </div>
+        </div>
+    </h:body>
+</html>
