@@ -1,5 +1,6 @@
 package com.eventify.config;
 
+import java.util.TimeZone;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Disposes;
@@ -14,14 +15,16 @@ import org.hibernate.SessionFactory;
  */
 @ApplicationScoped
 public class SessionProducer {
-    
+
     @Inject
     private SessionFactory sessionFactory;
 
     @Produces
     @RequestScoped
     public Session createSession() {
-        return sessionFactory.openSession();
+        return sessionFactory.withOptions()
+                .jdbcTimeZone(TimeZone.getTimeZone("America/El_Salvador"))
+                .openSession();
     }
 
     public void closeSession(@Disposes Session session) {

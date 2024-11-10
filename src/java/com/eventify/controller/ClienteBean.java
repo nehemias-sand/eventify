@@ -48,6 +48,10 @@ public class ClienteBean implements Serializable {
         this.selectedCliente.setIdGenero(new Genero());
         this.selectedCliente.setIdUsuario(new Usuario());
     }
+    
+    public void openEditDialog(Cliente cliente) {
+        this.selectedCliente = cliente;
+    }
 
     public void save() {
         String currentPasword = this.selectedCliente.getIdUsuario().getPassword();

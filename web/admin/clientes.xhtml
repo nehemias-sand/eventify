@@ -10,6 +10,152 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
-        <h1>Clientes</h1>
+        
+        <h:form id="form">
+            <p:growl id="messages" showDetail="true" />
+
+            <p:card>
+                <f:facet name="title">
+                    Gestión de Clientes
+                </f:facet>
+
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton value="Nuevo Cliente" icon="pi pi-plus" actionListener="#{clienteBean.openNew}"
+                                         update=":form:add-cliente-content" oncomplete="PF('addClienteDialog').show()"
+                                         styleClass="ui-button-success" style="margin-right: .5rem">
+                            <p:resetInput target=":form:add-cliente-content" />
+                        </p:commandButton>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <p:dataTable id="dt-clientes" widgetVar="dtClientes" var="cliente" value="#{clienteBean.clientes}"
+                             reflow="true" styleClass="clientes-table" rowKey="#{cliente.id}"
+                             paginator="true" rows="10" paginatorPosition="bottom">
+                    <p:column headerText="ID" sortBy="#{cliente.id}">
+                        <h:outputText value="#{cliente.id}" />
+                    </p:column>
+                    <p:column headerText="DUI" sortBy="#{cliente.dui}">
+                        <h:outputText value="#{cliente.dui}" />
+                    </p:column>
+                    <p:column headerText="Nombres" sortBy="#{cliente.nombres}">
+                        <h:outputText value="#{cliente.nombres}" />
+                    </p:column>
+                    <p:column headerText="Apellidos" sortBy="#{cliente.apellidos}">
+                        <h:outputText value="#{cliente.apellidos}" />
+                    </p:column>
+                    <p:column headerText="Teléfono" sortBy="#{cliente.telefono}">
+                        <h:outputText value="#{cliente.telefono}" />
+                    </p:column>
+                    <p:column headerText="Género" sortBy="#{cliente.idGenero.nombre}">
+                        <h:outputText value="#{cliente.idGenero.nombre}" />
+                    </p:column>
+                    <p:column headerText="Email" sortBy="#{cliente.idUsuario.email}">
+                        <h:outputText value="#{cliente.idUsuario.email}" />
+                    </p:column>
+                    <p:column exportable="false">
+                        <p:commandButton icon="pi pi-pencil" update=":form:edit-cliente-content"
+                                         oncomplete="PF('editClienteDialog').show()"
+                                         styleClass="edit-button rounded-button ui-button-success" process="@this">
+                            <f:setPropertyActionListener value="#{cliente}" target="#{clienteBean.selectedCliente}" />
+                            <p:resetInput target=":form:edit-cliente-content" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:card>
+
+           <p:dialog header="Agregar Cliente" showEffect="fade" modal="true" widgetVar="addClienteDialog"
+              responsive="true">
+                <p:outputPanel id="add-cliente-content" class="ui-fluid">
+                    <div class="p-field">
+                        <p:outputLabel for="add_nombres">Nombres:</p:outputLabel>
+                        <p:inputText id="add_nombres" value="#{clienteBean.selectedCliente.nombres}" required="true" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="add_apellidos">Apellidos:</p:outputLabel>
+                        <p:inputText id="add_apellidos" value="#{clienteBean.selectedCliente.apellidos}" required="true" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="add_telefono">Teléfono:</p:outputLabel>
+                        <p:inputText id="add_telefono" value="#{clienteBean.selectedCliente.telefono}" required="true" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="add_dui">DUI:</p:outputLabel>
+                        <p:inputText id="add_dui" value="#{clienteBean.selectedCliente.dui}" required="true" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="add_nacimiento" value="Fecha de Nacimiento:"/>
+                        <p:calendar id="add_nacimiento" value="#{clienteBean.selectedCliente.fechaNacimiento}" required="true" pattern="dd/MM/yyyy" mask="true"/>
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="add_genero">Género:</p:outputLabel>
+                        <p:selectOneMenu id="add_genero" value="#{clienteBean.selectedCliente.idGenero}" required="true"
+                                         converter="generoConverter">
+                            <f:selectItems value="#{clienteBean.generos}" var="genero" 
+                                           itemValue="#{genero}" itemLabel="#{genero.nombre}" />
+                        </p:selectOneMenu>
+                    </div>
+                    
+                    <div>
+                        <p:outputLabel for="add_email" value="Email:"/>
+                        <p:inputText id="add_email" value="#{clienteBean.selectedCliente.idUsuario.email}" required="true"/>
+                    </div>
+                    
+                    <div>
+                        <p:outputLabel for="add_password" value="Contraseña:"/>
+                        <p:password id="add_password" value="#{clienteBean.selectedCliente.idUsuario.password}" required="true" feedback="true" promptLabel="Ingrese una contraseña" weakLabel="Débil" goodLabel="Buena" strongLabel="Fuerte"/>
+                    </div>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <p:commandButton value="Guardar" icon="pi pi-check" actionListener="#{clienteBean.save()}"
+                                     update=":form:messages :form:dt-clientes" process="add-cliente-content @this" />
+                    <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('addClienteDialog').hide()"
+                                     class="ui-button-secondary" />
+                </f:facet>
+            </p:dialog>
+            
+            <p:dialog header="Editar Cliente" showEffect="fade" modal="true" widgetVar="editClienteDialog"
+              responsive="true">
+                <p:outputPanel id="edit-cliente-content" class="ui-fluid">
+                    <div class="p-field">
+                        <p:outputLabel for="updt_nombres">Nombres:</p:outputLabel>
+                        <p:inputText id="updt_nombres" value="#{clienteBean.selectedCliente.nombres}" required="true" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="updt_apellidos">Apellidos:</p:outputLabel>
+                        <p:inputText id="updt_apellidos" value="#{clienteBean.selectedCliente.apellidos}" required="true" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="updt_telefono">Teléfono:</p:outputLabel>
+                        <p:inputText id="updt_telefono" value="#{clienteBean.selectedCliente.telefono}" required="true" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="updt_dui">DUI:</p:outputLabel>
+                        <p:inputText id="updt_dui" value="#{clienteBean.selectedCliente.dui}" required="true" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="updt_nacimiento" value="Fecha de Nacimiento:"/>
+                        <p:calendar id="updt_nacimiento" value="#{clienteBean.selectedCliente.fechaNacimiento}" required="true" pattern="dd/MM/yyyy" mask="true"/>
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="updt_genero">Género:</p:outputLabel>
+                        <p:selectOneMenu id="updt_genero" value="#{clienteBean.selectedCliente.idGenero}" required="true"
+                                         converter="generoConverter">
+                            <f:selectItems value="#{clienteBean.generos}" var="genero" 
+                                           itemValue="#{genero}" itemLabel="#{genero.nombre}" />
+                        </p:selectOneMenu>
+                    </div>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <p:commandButton value="Guardar" icon="pi pi-check" actionListener="#{clienteBean.save()}"
+                                     update=":form:messages :form:dt-clientes" process="edit-cliente-content @this" />
+                    <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('editClienteDialog').hide()"
+                                     class="ui-button-secondary" />
+                </f:facet>
+            </p:dialog>
+        </h:form>
+        
     </h:body>
 </html>

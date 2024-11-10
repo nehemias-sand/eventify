@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Categorías de Eventos</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <p:growl id="messages" showDetail="true" />
+
+            <p:card>
+                <f:facet name="title">
+                    Gestión de Categorías de Eventos
+                </f:facet>
+
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton value="Nueva Categoría" icon="pi pi-plus" actionListener="#{categoriaEventoBean.openNew}"
+                                         update=":form:manage-categoriaEvento-content" oncomplete="PF('managecategoriaEventoDialog').show()"
+                                         styleClass="ui-button-success" style="margin-right: .5rem">
+                            <p:resetInput target=":form:manage-categoriaEvento-content" />
+                        </p:commandButton>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <p:dataTable id="dt-categoriasEvento" widgetVar="dtcategoriasEvento" var="categoriEvento" value="#{categoriaEventoBean.categoriasEvento}"
+                             reflow="true" styleClass="categoriasEvento-table" rowKey="#{categoriEvento.id}"
+                             paginator="true" rows="10" paginatorPosition="bottom">
+                    <p:column headerText="ID" sortBy="#{categoriEvento.id}">
+                        <h:outputText value="#{categoriEvento.id}" />
+                    </p:column>
+                    <p:column headerText="Nombre" sortBy="#{categoriEvento.nombre}">
+                        <h:outputText value="#{categoriEvento.nombre}" />
+                    </p:column>
+                    <p:column headerText="Descripción" sortBy="#{categoriEvento.descripcion}">
+                        <h:outputText value="#{categoriEvento.descripcion}" />
+                    </p:column>
+                    <p:column headerText="Estado" sortBy="#{categoriEvento.estado}">
+                        <p:toggleSwitch value="#{categoriEvento.estado}">
+                            <p:ajax listener="#{categoriaEventoBean.changeEstado(categoriEvento.id)}" update="@form" 
+                                    oncomplete="PF('statusDialog').hide()"/>
+                        </p:toggleSwitch>
+                    </p:column>
+                    <p:column exportable="false">
+                        <p:commandButton icon="pi pi-pencil" update=":form:manage-categoriaEvento-content"
+                                         oncomplete="PF('managecategoriaEventoDialog').show()"
+                                         styleClass="edit-button rounded-button ui-button-success" process="@this">
+                            <f:setPropertyActionListener value="#{categoriEvento}" target="#{categoriaEventoBean.selectedCategoriaEvento}" />
+                            <p:resetInput target=":form:manage-categoriaEvento-content" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:card>
+
+           <p:dialog header="Detalles de Categorías de Eventos" showEffect="fade" modal="true" widgetVar="managecategoriaEventoDialog"
+              responsive="true">
+                <p:outputPanel id="manage-categoriaEvento-content" class="ui-fluid">
+                    <div class="p-field">
+                        <p:outputLabel for="nombre">Nombre:</p:outputLabel>
+                        <p:inputText id="nombre" value="#{categoriaEventoBean.selectedCategoriaEvento.nombre}" required="true" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="descripcion">Descripción:</p:outputLabel>
+                        <p:inputText id="descripcion" value="#{categoriaEventoBean.selectedCategoriaEvento.descripcion}" required="true" />
+                    </div>   
+                </p:outputPanel>
+
+                 <f:facet name="footer">
+                    <p:commandButton value="Guardar" icon="pi pi-check" 
+                                     actionListener="#{categoriaEventoBean.save()}"
+                                     update=":form:messages :form:dt-categoriasEvento" 
+                                     process="manage-categoriaEvento-content @this" />
+                    <p:commandButton value="Cancelar" icon="pi pi-times" 
+                                     onclick="PF('managecategoriaEventoDialog').hide()"
+                                     class="ui-button-secondary" />
+                </f:facet>
+            </p:dialog>
+            
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                <p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
+            </p:dialog>
+        </h:form>
+    </h:body>
+</html>

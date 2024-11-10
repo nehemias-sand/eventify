@@ -10,6 +10,86 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
-        <h1>Reservas</h1>
+        <h:form id="form">
+            <p:growl id="messages" showDetail="true" />
+
+            <p:card>
+                <f:facet name="title">
+                    Gestión de Reservas
+                </f:facet>
+                
+                <p:panelGrid columns="4" layout="grid" styleClass="ui-fluid" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+                    <p:outputLabel value="Buscar por DUI:" for="duiFilter" />
+                    <p:inputText id="duiFilter" value="#{reservaBean.duiFilter}" placeholder="Ingrese DUI" />
+
+                    <p:outputLabel value="Buscar por Evento:" for="eventoFilter" />
+                    <p:inputText id="eventoFilter" value="#{reservaBean.eventoFilter}" placeholder="Ingrese evento" />
+                </p:panelGrid>
+
+                <p:panelGrid columns="3" layout="grid" styleClass="ui-fluid" columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4">
+                    <p:commandButton value="Filtrar" icon="pi pi-search" actionListener="#{reservaBean.filtrarReservas}" update="dt-reservas" styleClass="ui-button-primary"/>
+                    <p:commandButton value="Limpiar" icon="pi pi-times" actionListener="#{reservaBean.limpiarFiltros}" update="dt-reservas form:duiFilter form:eventoFilter" styleClass="ui-button-secondary"/>
+                    <p:spacer />
+                </p:panelGrid>
+
+                <p:dataTable id="dt-reservas" widgetVar="dtReservas" var="reserva" value="#{reservaBean.reservas}"
+                             reflow="true" styleClass="instalaciones-table" rowKey="#{reserva.id}"
+                             paginator="true" rows="10" paginatorPosition="bottom">
+                    <p:column headerText="ID" sortBy="#{reserva.id}">
+                        <h:outputText value="#{reserva.id}" />
+                    </p:column>
+                    <p:column headerText="Cliente:" sortBy="#{reserva.idCliente.nombres}">
+                        <h:outputText value="#{reserva.idCliente.nombres} #{reserva.idCliente.apellidos}" />
+                    </p:column>
+                    <p:column headerText="DUI:" sortBy="#{reserva.idCliente.dui}">
+                        <h:outputText value="#{reserva.idCliente.dui}" />
+                    </p:column>
+                    <p:column headerText="Fecha y Hora" sortBy="#{reserva.fechaHora}">
+                        <h:outputText value="#{reserva.fechaHora}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/El_Salvador"/>
+                        </h:outputText>
+                    </p:column>
+                   <p:column headerText="Total:" sortBy="#{reserva.total}">
+                        <h:outputText value="#{reserva.total}" />
+                    </p:column>
+                    <p:column headerText="Evento" sortBy="#{reserva.idEvento.nombre}">
+                        <h:outputText value="#{reserva.idEvento.nombre}" />
+                    </p:column>
+                    
+                    <p:column headerText="Butacas">
+                        <p:commandButton icon="pi pi-eye"
+                                        actionListener="#{reservaBean.cargarButacas(reserva.id)}"
+                                        oncomplete="PF('butacaDialog').show()"
+                                        update="form:dlgButacas">
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:card>
+            
+            <p:dialog id="dlgButacas" widgetVar="butacaDialog" header="Butacas Reservadas" modal="true" width="400">
+                
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputText value="Evento:" />
+                    <h:outputText value="#{reservaBean.seletecedEvento.nombre}" />
+
+                    <h:outputText value="Fecha y hora:" />
+                    <h:outputText value="#{reservaBean.seletecedEvento.fechaHora}">
+                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/El_Salvador"/>
+                    </h:outputText>
+                    
+                    <h:outputText value="Instalación:" />
+                    <h:outputText value="#{reservaBean.seletecedEvento.idInstalalacion.nombre}" />
+                </h:panelGrid>
+                
+                <p:separator />
+                
+                <p:orderList value="#{reservaBean.butacasSeleccionadas}" var="butaca" 
+                             itemLabel="#{butaca.codigo}" itemValue="#{butaca}">
+                    <p:column>
+                        <h:outputText value="#{butaca.codigo}" />
+                    </p:column>
+                </p:orderList>
+            </p:dialog>
+        </h:form>
     </h:body>
 </html>

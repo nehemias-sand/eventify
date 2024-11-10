@@ -10,6 +10,87 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
-        <h1>Organizadores</h1>
+        <h:form id="form">
+            <p:growl id="messages" showDetail="true" />
+
+            <p:card>
+                <f:facet name="title">
+                    Gestión de Organizadores
+                </f:facet>
+
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton value="Nuevo Organizador" icon="pi pi-plus" actionListener="#{organizadorBean.openNew}"
+                                         update=":form:manage-organizador-content" oncomplete="PF('manageOrganizadorDialog').show()"
+                                         styleClass="ui-button-success" style="margin-right: .5rem">
+                            <p:resetInput target=":form:manage-organizador-content" />
+                        </p:commandButton>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <p:dataTable id="dt-organizadores" widgetVar="dtOrganizadores" var="organizador" value="#{organizadorBean.organizadores}"
+                             reflow="true" styleClass="organizadores-table" rowKey="#{organizador.id}"
+                             paginator="true" rows="10" paginatorPosition="bottom">
+                    <p:column headerText="ID" sortBy="#{organizador.id}">
+                        <h:outputText value="#{organizador.id}" />
+                    </p:column>
+                    <p:column headerText="Nombre" sortBy="#{organizador.nombre}">
+                        <h:outputText value="#{organizador.nombre}" />
+                    </p:column>
+                    <p:column headerText="Teléfono" sortBy="#{organizador.telefono}">
+                        <h:outputText value="#{organizador.telefono}" />
+                    </p:column>
+                    <p:column headerText="Email" sortBy="#{organizador.email}">
+                        <h:outputText value="#{organizador.email}" />
+                    </p:column>
+                    <p:column headerText="Estado" sortBy="#{organizador.estado}">
+                        <p:toggleSwitch value="#{organizador.estado}">
+                            <p:ajax listener="#{organizadorBean.changeEstado(organizador.id)}" update="@form" 
+                                    oncomplete="PF('statusDialog').hide()"/>
+                        </p:toggleSwitch>
+                    </p:column>
+                    <p:column exportable="false">
+                        <p:commandButton icon="pi pi-pencil" update=":form:manage-organizador-content"
+                                         oncomplete="PF('manageOrganizadorDialog').show()"
+                                         styleClass="edit-button rounded-button ui-button-success" process="@this">
+                            <f:setPropertyActionListener value="#{organizador}" target="#{organizadorBean.selectedOrganizador}" />
+                            <p:resetInput target=":form:manage-organizador-content" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:card>
+
+           <p:dialog header="Detalles de Organizador" showEffect="fade" modal="true" widgetVar="manageOrganizadorDialog"
+              responsive="true">
+                <p:outputPanel id="manage-organizador-content" class="ui-fluid">
+                    <div class="p-field">
+                        <p:outputLabel for="nombre">Nombres</p:outputLabel>
+                        <p:inputText id="nombre" value="#{organizadorBean.selectedOrganizador.nombre}" required="true" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="telefono">Teléfono:</p:outputLabel>
+                        <p:inputText id="telefono" value="#{organizadorBean.selectedOrganizador.telefono}" required="true" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="email">Email:</p:outputLabel>
+                        <p:inputText id="email" value="#{organizadorBean.selectedOrganizador.email}" required="true" />
+                    </div>    
+                </p:outputPanel>
+
+                 <f:facet name="footer">
+                    <p:commandButton value="Guardar" icon="pi pi-check" 
+                                     actionListener="#{organizadorBean.save()}"
+                                     update=":form:messages :form:dt-organizadores" 
+                                     process="manage-organizador-content @this" />
+                    <p:commandButton value="Cancelar" icon="pi pi-times" 
+                                     onclick="PF('manageOrganizadorDialog').hide()"
+                                     class="ui-button-secondary" />
+                </f:facet>
+            </p:dialog>
+            
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                <p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
+            </p:dialog>
+        </h:form>
     </h:body>
 </html>

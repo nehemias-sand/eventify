@@ -42,7 +42,7 @@ public class HibernateConfig {
             // Configuración de Hibernate
             Properties settings = new Properties();
             settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
-            settings.put(Environment.URL, "jdbc:mysql://localhost:3306/eventify?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC");
+            settings.put(Environment.URL, "jdbc:mysql://localhost:3306/eventify?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=America/El_Salvador");
             settings.put(Environment.USER, "root");
             settings.put(Environment.PASS, "sa");
             settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL8Dialect");

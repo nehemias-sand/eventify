@@ -42,6 +42,9 @@ public class CategoriaEvento implements Serializable {
     @Column(name = "descripcion")
     private String descripcion;
     
+    @Column(name = "estado")
+    private Boolean estado;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCategoria")
     private List<Evento> eventoList;
 
@@ -56,6 +59,7 @@ public class CategoriaEvento implements Serializable {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
+        this.estado = true;
     }
 
     public Integer getId() {
@@ -82,6 +86,14 @@ public class CategoriaEvento implements Serializable {
         this.descripcion = descripcion;
     }
 
+    public Boolean getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Boolean estado) {
+        this.estado = estado;
+    }
+    
     public List<Evento> getEventoList() {
         return eventoList;
     }

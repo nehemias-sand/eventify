@@ -130,6 +130,14 @@
                             <i class="pi pi-building"></i>
                             <span>Instalaciones</span>
                         </p:menuitem>
+                        <p:menuitem value="Eventos" action="#{sidebarAdminBean.setCurrentPage('eventos')}" update="@form :contentArea" styleClass="menu-item #{sidebarAdminBean.currentPage == 'eventos' ? 'active' : ''}">
+                            <i class="pi pi-slack"></i>
+                            <span>Eventos</span>
+                        </p:menuitem>
+                        <p:menuitem value="Categorías de eventos" action="#{sidebarAdminBean.setCurrentPage('categoriasEvento')}" update="@form :contentArea" styleClass="menu-item #{sidebarAdminBean.currentPage == 'categoriasEvento' ? 'active' : ''}">
+                            <i class="pi pi-align-center"></i>
+                            <span>Categorías</span>
+                        </p:menuitem>
                         <p:menuitem value="Reservas" action="#{sidebarAdminBean.setCurrentPage('reservas')}" update="@form :contentArea" styleClass="menu-item #{sidebarAdminBean.currentPage == 'reservas' ? 'active' : ''}">
                             <i class="pi pi-calendar"></i>
                             <span>Reservas</span>

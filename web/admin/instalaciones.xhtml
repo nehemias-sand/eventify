@@ -10,6 +10,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
-        <h1>Instalaciones</h1>
+        <h:form id="form">
+            <p:growl id="messages" showDetail="true" />
+
+            <p:card>
+                <f:facet name="title">
+                    Gestión de Instalaciones
+                </f:facet>
+
+                <p:dataTable id="dt-instalaciones" widgetVar="dtInstalaciones" var="instalacion" value="#{instalacionBean.instalaciones}"
+                             reflow="true" styleClass="instalaciones-table" rowKey="#{instalacion.id}"
+                             paginator="true" rows="10" paginatorPosition="bottom">
+                    <p:column headerText="ID" sortBy="#{instalacion.id}">
+                        <h:outputText value="#{instalacion.id}" />
+                    </p:column>
+                    <p:column headerText="Nombre:" sortBy="#{instalacion.nombre}">
+                        <h:outputText value="#{instalacion.nombre}" />
+                    </p:column>
+                    <p:column headerText="Capacidad:" sortBy="#{instalacion.capacidad}">
+                        <h:outputText value="#{instalacion.capacidad}" />
+                    </p:column>
+                    
+                    <p:column headerText="Detalles">
+                        <p:commandButton icon="pi pi-eye"
+                                         actionListener="#{instalacionBean.verCroquis(instalacion.urlCroquis)}"
+                                         process="@this" update=":form:dlgCroquis" 
+                                         oncomplete="PF('dlgCroquis').show()"/>
+                    </p:column>
+                </p:dataTable>
+            </p:card>
+            
+            <p:dialog id="dlgCroquis" widgetVar="dlgCroquis" header="Croquis de Instalación" modal="true" 
+                      closable="true" resizable="false" width="500">
+                <h:panelGroup rendered="#{not empty instalacionBean.selectedCroquis}">
+                    <h:graphicImage value="#{instalacionBean.selectedCroquis}" style="max-width:100%; max-height:100%;" />
+                </h:panelGroup>
+            </p:dialog>
+        </h:form>
     </h:body>
 </html>

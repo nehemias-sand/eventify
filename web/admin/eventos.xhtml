@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Eventos</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+
+    <h:body>
+        <h:form id="mainForm">
+            <p:growl id="messages" showDetail="true" />
+
+            <p:card>
+                <f:facet name="title">
+                    Gestión de Eventos
+                </f:facet>
+
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton value="Nuevo Evento" icon="pi pi-plus" actionListener="#{eventoBean.openNew}"
+                                         update=":dialogForm:manage-evento-content" oncomplete="PF('manageEventoDialog').show()"
+                                         styleClass="ui-button-success" style="margin-right: .5rem">
+                            <p:resetInput target=":dialogForm:manage-evento-content" />
+                        </p:commandButton>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <p:panelGrid columns="2" layout="grid" styleClass="ui-fluid" columnClasses="ui-grid-col-3,ui-grid-col-9">
+                    <p:outputLabel value="Buscar por nombre:" for="nombreFilter" />
+                    <p:inputText id="nombreFilter" value="#{eventoBean.nombreFilter}" placeholder="Ingrese nombre del evento">
+                        <p:ajax event="keyup" listener="#{eventoBean.filtrarPorNombre}" update="dt-eventos" delay="300"/>
+                    </p:inputText>
+                </p:panelGrid>
+
+                <p:panelGrid columns="2" layout="grid" styleClass="ui-fluid" columnClasses="ui-grid-col-6,ui-grid-col-6">
+                    <p:commandButton value="Limpiar" icon="pi pi-times" actionListener="#{eventoBean.limpiarFiltros}" 
+                                     update="dt-eventos nombreFilter messages" styleClass="ui-button-secondary"
+                                     oncomplete="PF('dtEventos').clearFilters()"/>
+                </p:panelGrid>
+
+                <p:dataTable id="dt-eventos" widgetVar="dtEventos" var="evento" value="#{eventoBean.eventos}"
+                             reflow="true" styleClass="eventos-table" rowKey="#{evento.id}"
+                             paginator="true" rows="10" paginatorPosition="bottom">
+                    <p:column headerText="ID" sortBy="#{evento.id}">
+                        <h:outputText value="#{evento.id}" />
+                    </p:column>
+                    <p:column headerText="Nombre" sortBy="#{evento.nombre}">
+                        <h:outputText value="#{evento.nombre}" />
+                    </p:column>
+                    <p:column headerText="Fecha y Hora" sortBy="#{evento.fechaHora}">
+                        <h:outputText value="#{evento.fechaHora}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/El_Salvador"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Organizador" sortBy="#{evento.idOrganizador.nombre}">
+                        <h:outputText value="#{evento.idOrganizador.nombre}" />
+                    </p:column>
+                    <p:column headerText="Instalación" sortBy="#{evento.idInstalalacion.nombre}">
+                        <h:outputText value="#{evento.idInstalalacion.nombre}" />
+                    </p:column>
+                    <p:column headerText="Categoría" sortBy="#{evento.idCategoria.nombre}">
+                        <h:outputText value="#{evento.idCategoria.nombre}" />
+                    </p:column>
+                    <p:column headerText="Estado" sortBy="#{evento.idEstado.nombre}">
+                        <h:outputText value="#{evento.idEstado.nombre}" />
+                    </p:column>
+                    <p:column exportable="false">
+                        <p:commandButton icon="pi pi-pencil" update=":dialogForm:manage-evento-content"
+                                         oncomplete="PF('manageEventoDialog').show()"
+                                         styleClass="edit-button rounded-button ui-button-success" process="@this">
+                            <f:setPropertyActionListener value="#{evento}" target="#{eventoBean.selectedEvento}" />
+                            <p:resetInput target=":dialogForm:manage-evento-content" />
+                        </p:commandButton>
+
+                        <p:commandButton icon="pi pi-trash" 
+                                         styleClass="delete-button rounded-button ui-button-danger"
+                                         onclick="PF('confirmDeleteDialog').show()"
+                                         process="@this"
+                                         update="@none">
+                            <f:setPropertyActionListener value="#{evento}" target="#{eventoBean.selectedEvento}" />
+                        </p:commandButton>
+
+                        <p:commandButton icon="pi pi-power-off" 
+                                         styleClass="activate-button rounded-button ui-button-success"
+                                         onclick="PF('confirmActiveDialog').show()"
+                                         process="@this"
+                                         update="@none">
+                            <f:setPropertyActionListener value="#{evento}" target="#{eventoBean.selectedEvento}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:card>
+
+            <p:confirmDialog widgetVar="confirmDeleteDialog" id="confirmDeleteDialog" header="Confirmación"
+                             message="¿Está seguro de que desea cancelar este evento?"
+                             severity="warn">
+                <p:commandButton value="Sí" styleClass="ui-button-danger"
+                                 actionListener="#{eventoBean.cancelarEvento}" 
+                                 update=":mainForm:dt-eventos :mainForm:messages" 
+                                 process="@this"
+                                 oncomplete="PF('confirmDeleteDialog').hide()">
+                </p:commandButton>
+                <p:commandButton value="No" onclick="PF('confirmDeleteDialog').hide()" type="button" styleClass="ui-button-secondary" />
+            </p:confirmDialog>
+
+            <p:confirmDialog widgetVar="confirmActiveDialog" id="confirmActiveDialog" header="Confirmación"
+                             message="¿Está seguro de que desea activar este evento?"
+                             severity="warn">
+                <p:commandButton value="Sí" styleClass="ui-button-success"
+                                 actionListener="#{eventoBean.activarEvento}" 
+                                 update=":mainForm:dt-eventos :mainForm:messages" 
+                                 process="@this"
+                                 oncomplete="PF('confirmActiveDialog').hide()">
+                </p:commandButton>
+                <p:commandButton value="No" onclick="PF('confirmActiveDialog').hide()" type="button" styleClass="ui-button-secondary" />
+            </p:confirmDialog>
+        </h:form>
+
+        <h:form id="dialogForm">
+            <p:dialog header="Agregar Evento" showEffect="fade" modal="true" widgetVar="manageEventoDialog"
+                      responsive="true">
+                <p:outputPanel id="manage-evento-content" class="ui-fluid">
+                    <div class="p-field">
+                        <p:outputLabel for="nombre">Nombre:</p:outputLabel>
+                        <p:inputText id="nombre" value="#{eventoBean.selectedEvento.nombre}" required="true" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="descripcion">Descripción:</p:outputLabel>
+                        <p:inputText id="descripcion" value="#{eventoBean.selectedEvento.descripcion}" required="true" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="fechaHora">Fecha y Hora:</p:outputLabel>
+                        <p:datePicker id="fechaHora" value="#{eventoBean.selectedEvento.fechaHora}" required="true" 
+                                      pattern="dd/MM/yyyy HH:mm" showTime="true" timeOnly="false" timeZone="America/El_Salvador" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="organizador">Organizador:</p:outputLabel>
+                        <p:selectOneMenu id="organizador" value="#{eventoBean.selectedEvento.idOrganizador}" required="true"
+                                         converter="organizadorConverter">
+                            <f:selectItems value="#{eventoBean.organizadoresActivos}" var="organizador" 
+                                           itemValue="#{organizador}" itemLabel="#{organizador.nombre}" />
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="instalacion">Instalación:</p:outputLabel>
+                        <p:selectOneMenu id="instalacion" value="#{eventoBean.selectedEvento.idInstalalacion}" required="true"
+                                         converter="instalacionConverter">
+                            <f:selectItems value="#{eventoBean.instalaciones}" var="instalacion" 
+                                           itemValue="#{instalacion}" itemLabel="#{instalacion.nombre}" />
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="categoriaEvento">Categoría de Evento:</p:outputLabel>
+                        <p:selectOneMenu id="categoriaEvento" value="#{eventoBean.selectedEvento.idCategoria}" required="true"
+                                         converter="categoriaEventoConverter">
+                            <f:selectItems value="#{eventoBean.categoriasEventoActivos}" var="categoriaEvento" 
+                                           itemValue="#{categoriaEvento}" itemLabel="#{categoriaEvento.nombre}" />
+                        </p:selectOneMenu>
+                    </div>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <p:commandButton value="Guardar" icon="pi pi-check" actionListener="#{eventoBean.save}"
+                                     update=":mainForm:dt-eventos :mainForm:messages" process="@form" 
+                                     oncomplete="if(!args.validationFailed) PF('manageEventoDialog').hide()"/>
+                    <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('manageEventoDialog').hide()"
+                                     class="ui-button-secondary" type="button"/>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </h:body>
+
+</html>

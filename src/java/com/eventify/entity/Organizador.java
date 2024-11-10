@@ -49,6 +49,9 @@ public class Organizador implements Serializable {
     @Column(name = "email")
     private String email;
     
+    @Column(name = "estado")
+    private Boolean estado;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idOrganizador")
     private List<Evento> eventoList;
 
@@ -64,6 +67,7 @@ public class Organizador implements Serializable {
         this.nombre = nombre;
         this.telefono = telefono;
         this.email = email;
+        this.estado = true;
     }
 
     public Integer getId() {
@@ -98,6 +102,14 @@ public class Organizador implements Serializable {
         this.email = email;
     }
 
+    public Boolean getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Boolean estado) {
+        this.estado = estado;
+    }
+    
     public List<Evento> getEventoList() {
         return eventoList;
     }
