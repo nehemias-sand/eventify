@@ -120,11 +120,11 @@
         </p:panel>
 
         <p:dialog id="dlgCroquis" widgetVar="dlgCroquis" header="Croquis de Instalación" modal="true" 
-                  closable="true" resizable="false" width="80%" height="80%">
+                  closable="true" resizable="false" width="50%">
             <h:panelGroup rendered="#{not empty reservaEventoBean.eventoSeleccionado}">
                 <h:graphicImage value="#{reservaEventoBean.eventoSeleccionado.idInstalalacion.urlCroquis}" 
                                 alt="Croquis de la instalación"
-                                style="max-width:100%; max-height:100%; object-fit: contain;" />
+                                style="max-width:100%; max-height:100%;" />
             </h:panelGroup>
         </p:dialog>
     </h:form>

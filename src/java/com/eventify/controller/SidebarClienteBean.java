@@ -18,7 +18,7 @@ public class SidebarClienteBean {
     private String currentPage = "eventos";
     
     public String getSaludo() {
-        return loginBean.getUsuarioSesion().get().getEmail().split("@")[0];
+        return loginBean.getUsuarioSesion().get().getCliente().getNombres();
     }
     
     public String logout() {
