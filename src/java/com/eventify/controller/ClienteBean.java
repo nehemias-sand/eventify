@@ -72,6 +72,8 @@ public class ClienteBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, 
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Cliente actualizado correctamente"));
         }
+        
+        PrimeFaces.current().executeScript("window.location.reload();");
     }
 
     public List<Cliente> getClientes() {

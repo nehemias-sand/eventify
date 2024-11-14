@@ -7,7 +7,6 @@ import com.eventify.entity.EstadoEvento;
 import com.eventify.entity.EstadoPago;
 import com.eventify.entity.Genero;
 import com.eventify.entity.Rol;
-import com.eventify.entity.TipoPago;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -90,18 +89,6 @@ public class CatalogoDaoImp implements CatalogoDao {
     public List<CategoriaButaca> findAllCategoriasButaca() {
        try {
             return session.createQuery("FROM CategoriaButaca cb", CategoriaButaca.class)
-                    .getResultList();
-
-        } catch (Exception e) {
-            System.err.println(e.getLocalizedMessage());
-            return Collections.emptyList();
-        }
-    }
-
-    @Override
-    public List<TipoPago> findAllTiposPago() {
-        try {
-            return session.createQuery("FROM TipoPago tp", TipoPago.class)
                     .getResultList();
 
         } catch (Exception e) {

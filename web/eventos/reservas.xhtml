@@ -1,0 +1,101 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="reservasForm">
+        <div class="card">
+            <h2 class="text-2xl font-bold mb-4">Mis Eventos Reservados</h2>
+
+            <p:dataView value="#{misReservasBean.misReservas}" var="reserva" 
+                        layout="grid" rows="3" paginator="true" 
+                        paginatorPosition="bottom"
+                        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+
+                <p:dataViewGridItem>
+                    <p:card styleClass="ui-card-shadow m-2 border-round-xl transition-colors transition-duration-300 hover:surface-hover h-full">
+                        <f:facet name="title">
+                            <h4 class="text-xl font-bold mb-2 text-center">#{reserva.idEvento.nombre}</h4>
+                        </f:facet>
+                        <f:facet name="subtitle">
+                            <div class="flex flex-column align-items-center gap-3 text-sm">
+                                <span class="flex align-items-center gap-2 text-600">
+                                    <i class="pi pi-calendar" style="margin-right: 5px"></i>
+                                    <h:outputText value="#{reserva.idEvento.fechaHora}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/El_Salvador" />
+                                    </h:outputText>
+                                </span> <br /><br />
+                                <span class="flex align-items-center gap-2 text-600">
+                                    <i class="pi pi-map-marker" style="margin-right: 5px"></i>
+                                    <h:outputText value="#{reserva.idEvento.idInstalalacion.nombre}" />
+                                </span> <br /><br />
+                                <span class="flex align-items-center gap-2 text-600">
+                                    <i class="pi pi-ticket" style="margin-right: 5px"></i>
+                                    <h:outputText value="Butacas: #{reserva.reservaButacaList.size()}" />
+                                </span> <br /><br />
+                                <p:divider styleClass="w-full"/>
+                                <span class="flex align-items-center gap-2 text-600">
+                                    <i class="pi pi-money-bill" style="margin-right: 5px"></i>
+                                    <h:outputText value="Total: $#{reserva.total}">
+                                        <f:convertNumber pattern="#0.00" />
+                                    </h:outputText>
+                                </span>
+                            </div>
+                        </f:facet>
+                        <f:facet name="footer">
+                            <p:commandButton value="Ver Detalles" 
+                                             styleClass="p-button-raised p-button-secondary w-full"
+                                             icon="pi pi-eye"
+                                             action="#{misReservasBean.verDetallesReserva(reserva)}"
+                                             update=":reservasForm:detallesReservaDialog"
+                                             oncomplete="PF('detallesReservaDialog').show()" />
+                        </f:facet>
+                    </p:card>
+                </p:dataViewGridItem>
+            </p:dataView>
+
+            <p:dialog header="Detalles de la Reserva" widgetVar="detallesReservaDialog" modal="true" 
+                      showEffect="fade" hideEffect="fade" responsive="true" width="50%" 
+                      id="detallesReservaDialog">
+                <p:outputPanel id="detallesReservaContent">
+                    <h:panelGroup rendered="#{not empty misReservasBean.reservaSeleccionada}">
+                        <h3 class="text-xl font-bold mb-3">#{misReservasBean.reservaSeleccionada.idEvento.nombre}</h3>
+                        <div class="grid">
+                            <div class="col-12 md:col-6">
+                                <p><strong>Fecha y Hora:</strong> 
+                                    <h:outputText value="#{misReservasBean.reservaSeleccionada.idEvento.fechaHora}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/El_Salvador" />
+                                    </h:outputText>
+                                </p>
+                                <p><strong>Localidad:</strong> #{misReservasBean.reservaSeleccionada.idEvento.idInstalalacion.nombre}</p>
+                                <p><strong>Total:</strong> $#{misReservasBean.reservaSeleccionada.total}</p>
+                            </div>
+                            <div class="col-12 md:col-6">
+                                <h4 class="text-lg font-semibold mb-2">Butacas Reservadas</h4>
+                                <p:dataTable value="#{misReservasBean.butacasReservadas}" var="butaca" 
+                                             styleClass="p-datatable-sm" rowIndexVar="index">
+                                    <p:column headerText="#">
+                                        #{index + 1}
+                                    </p:column>
+                                    <p:column headerText="Código">
+                                        #{butaca.butaca.codigo}
+                                    </p:column>
+                                    <p:column headerText="Categoría">
+                                        #{butaca.butaca.idCategoria.nombre}
+                                    </p:column>
+                                    <p:column headerText="Precio">
+                                        $#{butaca.precio}
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{empty misReservasBean.reservaSeleccionada}">
+                        <p>No hay detalles disponibles para esta reserva.</p>
+                    </h:panelGroup>
+                </p:outputPanel>
+            </p:dialog>
+        </div>
+    </h:form>
+</ui:composition>

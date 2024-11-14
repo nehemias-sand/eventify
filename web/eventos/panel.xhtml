@@ -110,6 +110,10 @@
                         </h2>
                     </div>
                     <p:menu styleClass="transparent-menu">
+                        <p:menuitem value="Reservas" action="#{sidebarClienteBean.setCurrentPage('reservas')}" update="@form :contentArea" styleClass="menu-item #{sidebarClienteBean.currentPage == 'reservas' ? 'active' : ''}">
+                            <i class="pi pi-home"></i>
+                            <span>Mis Reservas</span>
+                        </p:menuitem>
                         <p:menuitem value="Eventos" action="#{sidebarClienteBean.setCurrentPage('eventos')}" update="@form :contentArea" styleClass="menu-item #{sidebarClienteBean.currentPage == 'eventos' ? 'active' : ''}">
                             <i class="pi pi-home"></i>
                             <span>Eventos</span>

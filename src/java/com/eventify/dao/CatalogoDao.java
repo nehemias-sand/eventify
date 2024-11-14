@@ -6,7 +6,6 @@ import com.eventify.entity.EstadoEvento;
 import com.eventify.entity.EstadoPago;
 import com.eventify.entity.Genero;
 import com.eventify.entity.Rol;
-import com.eventify.entity.TipoPago;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,8 +24,6 @@ public interface CatalogoDao {
     List<CategoriaEvento> findAllCategoriasEvento();
 
     List<CategoriaButaca> findAllCategoriasButaca();
-
-    List<TipoPago> findAllTiposPago();
 
     List<EstadoPago> findAllEstadosPago();
 }

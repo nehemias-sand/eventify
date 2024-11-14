@@ -91,6 +91,15 @@
                                          update="@none">
                             <f:setPropertyActionListener value="#{evento}" target="#{eventoBean.selectedEvento}" />
                         </p:commandButton>
+
+                        <p:commandButton icon="pi pi-eye" 
+                                         styleClass="view-seats-button rounded-button ui-button-info"
+                                         actionListener="#{eventoBean.cargarButacas}"
+                                         update=":seatInfoForm:seat-info-content"
+                                         oncomplete="PF('seatInfoDialog').show()"
+                                         process="@this">
+                            <f:setPropertyActionListener value="#{evento}" target="#{eventoBean.selectedEvento}" />
+                        </p:commandButton>
                     </p:column>
                 </p:dataTable>
             </p:card>
@@ -172,6 +181,64 @@
                 </f:facet>
             </p:dialog>
         </h:form>
-    </h:body>
 
+        <h:form id="seatInfoForm">
+            <p:dialog header="Información de Butacas" showEffect="fade" modal="true" widgetVar="seatInfoDialog"
+                      responsive="true" width="80%">
+                <f:event type="preRenderView" listener="#{eventoBean.cargarButacas}" />
+                <p:outputPanel id="seat-info-content" class="ui-fluid">
+                    <p:tabView>
+                        <p:tab title="Butacas Disponibles">
+                            <p:dataTable var="butaca" value="#{eventoBean.butacasDisponibles}"
+                                         reflow="true" styleClass="butacas-table"
+                                         paginator="true" rows="5" paginatorPosition="bottom"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                         currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}">
+                                <p:column headerText="Código">
+                                    <h:outputText value="#{butaca.codigo}" />
+                                </p:column>
+                                <p:column headerText="Categoría">
+                                    <h:outputText value="#{butaca.idCategoria.nombre}" />
+                                </p:column>
+                                <p:column headerText="Precio">
+                                    <h:outputText value="#{butaca.idCategoria.precio}">
+                                        <f:convertNumber type="currency" currencySymbol="$" />
+                                    </h:outputText>
+                                </p:column>
+                            </p:dataTable>
+                        </p:tab>
+                        <p:tab title="Butacas Ocupadas">
+                            <p:dataTable var="butaca" value="#{eventoBean.butacasOcupadas}"
+                                         reflow="true" styleClass="butacas-table"
+                                         paginator="true" rows="5" paginatorPosition="bottom"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                         currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}">
+                                <p:column headerText="Código">
+                                    <h:outputText value="#{butaca.codigo}" />
+                                </p:column>
+                                <p:column headerText="Categoría">
+                                    <h:outputText value="#{butaca.idCategoria.nombre}" />
+                                </p:column>
+                                <p:column headerText="Precio">
+                                    <h:outputText value="#{butaca.idCategoria.precio}">
+                                        <f:convertNumber type="currency" currencySymbol="$" />
+                                    </h:outputText>
+                                </p:column>
+                            </p:dataTable>
+                        </p:tab>
+                    </p:tabView>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Cerrar" icon="pi pi-times" onclick="PF('seatInfoDialog').hide()"
+                                     class="ui-button-secondary" type="button"/>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+
+        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>
+
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+            <p:graphicImage name="/images/ajaxloadingbar.gif" />
+        </p:dialog>
+    </h:body>
 </html>

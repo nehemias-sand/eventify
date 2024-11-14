@@ -14,7 +14,6 @@ import com.eventify.entity.Cliente;
 import com.eventify.entity.Reserva;
 import com.eventify.entity.ReservaButaca;
 import com.eventify.entity.Rol;
-import com.eventify.entity.TipoPago;
 import com.eventify.entity.Usuario;
 import java.util.Properties;
 import javax.enterprise.context.ApplicationScoped;
@@ -67,7 +66,6 @@ public class HibernateConfig {
             configuration.addAnnotatedClass(CategoriaButaca.class);
             configuration.addAnnotatedClass(ReservaButaca.class);
             configuration.addAnnotatedClass(Pago.class);
-            configuration.addAnnotatedClass(TipoPago.class);
             configuration.addAnnotatedClass(EstadoPago.class);
 
             ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
